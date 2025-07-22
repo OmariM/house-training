@@ -30,59 +30,79 @@ class Metronome {
     }
 
     setupEventListeners() {
-        // BPM input
+        // BPM input (only on main page)
         const bpmInput = document.getElementById('bpmInput');
-        bpmInput.addEventListener('input', (e) => {
-            this.setBpm(parseInt(e.target.value) || 120);
-        });
-
-
+        if (bpmInput) {
+            bpmInput.addEventListener('input', (e) => {
+                this.setBpm(parseInt(e.target.value) || 120);
+            });
+        }
 
         // Playback controls
-        document.getElementById('playBtn').addEventListener('click', () => {
-            this.togglePlay();
-        });
+        const playBtn = document.getElementById('playBtn');
+        if (playBtn) {
+            playBtn.addEventListener('click', () => {
+                this.togglePlay();
+            });
+        }
 
-        document.getElementById('stopBtn').addEventListener('click', () => {
-            this.stop();
-        });
+        const stopBtn = document.getElementById('stopBtn');
+        if (stopBtn) {
+            stopBtn.addEventListener('click', () => {
+                this.stop();
+            });
+        }
 
         // Settings
-        document.getElementById('timeSignature').addEventListener('change', (e) => {
-            this.timeSignature = parseInt(e.target.value);
-        });
+        const timeSignature = document.getElementById('timeSignature');
+        if (timeSignature) {
+            timeSignature.addEventListener('change', (e) => {
+                this.timeSignature = parseInt(e.target.value);
+            });
+        }
 
-        document.getElementById('soundType').addEventListener('change', (e) => {
-            this.soundType = e.target.value;
-        });
+        const soundType = document.getElementById('soundType');
+        if (soundType) {
+            soundType.addEventListener('change', (e) => {
+                this.soundType = e.target.value;
+            });
+        }
 
         // Subdivision toggle
-        document.getElementById('toggleSubdivision').addEventListener('click', () => {
-            this.toggleSubdivision();
-        });
+        const toggleSubdivision = document.getElementById('toggleSubdivision');
+        if (toggleSubdivision) {
+            toggleSubdivision.addEventListener('click', () => {
+                this.toggleSubdivision();
+            });
+        }
 
         // Emphasis toggle
-        document.getElementById('toggleEmphasis').addEventListener('click', () => {
-            this.toggleEmphasis();
-        });
+        const toggleEmphasis = document.getElementById('toggleEmphasis');
+        if (toggleEmphasis) {
+            toggleEmphasis.addEventListener('click', () => {
+                this.toggleEmphasis();
+            });
+        }
 
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            // Don't trigger shortcuts if user is typing in an input field
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
-                return;
-            }
-            
-            if (e.code === 'Space') {
-                e.preventDefault();
-                this.togglePlay();
-            } else if (e.code === 'Escape') {
-                this.stop();
-            } else if (e.code === 'KeyT') {
-                e.preventDefault();
-                this.testSound();
-            }
-        });
+        // Keyboard shortcuts (only on main page)
+        if (document.getElementById('bpmInput')) { // Only add keyboard shortcuts on main page
+            document.addEventListener('keydown', (e) => {
+                // Don't trigger shortcuts if user is typing in an input field
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+                    return;
+                }
+                
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    this.togglePlay();
+                } else if (e.code === 'Escape') {
+                    this.stop();
+                } else if (e.code === 'KeyT') {
+                    e.preventDefault();
+                    this.testSound();
+                }
+            });
+        }
     }
 
     setBpm(bpm) {
@@ -104,10 +124,12 @@ class Metronome {
         
         // Update button appearance
         const button = document.getElementById('toggleSubdivision');
-        if (this.subdivisionEnabled) {
-            button.classList.remove('quarter-mode');
-        } else {
-            button.classList.add('quarter-mode');
+        if (button) {
+            if (this.subdivisionEnabled) {
+                button.classList.remove('quarter-mode');
+            } else {
+                button.classList.add('quarter-mode');
+            }
         }
         
         // Update visual display
@@ -121,10 +143,12 @@ class Metronome {
         
         // Update button appearance
         const button = document.getElementById('toggleEmphasis');
-        if (this.emphasisEnabled) {
-            button.classList.remove('equal-mode');
-        } else {
-            button.classList.add('equal-mode');
+        if (button) {
+            if (this.emphasisEnabled) {
+                button.classList.remove('equal-mode');
+            } else {
+                button.classList.add('equal-mode');
+            }
         }
         
         // Update visual display
@@ -132,6 +156,8 @@ class Metronome {
         
         console.log('Emphasis toggled:', this.emphasisEnabled ? 'First beat emphasized' : 'Equal beats');
     }
+
+
 
     togglePlay() {
         if (this.isPlaying) {
@@ -164,8 +190,10 @@ class Metronome {
         this.nextNoteTime = this.audioContext.currentTime;
         
         const playBtn = document.getElementById('playBtn');
-        playBtn.classList.add('playing');
-        playBtn.innerHTML = '<span class="pause-icon">⏸</span>Pause';
+        if (playBtn) {
+            playBtn.classList.add('playing');
+            playBtn.innerHTML = '<span class="pause-icon">⏸</span>Pause';
+        }
 
         // Start the scheduler
         this.schedulerInterval = setInterval(() => {
@@ -186,11 +214,17 @@ class Metronome {
         }
 
         const playBtn = document.getElementById('playBtn');
-        playBtn.classList.remove('playing');
-        playBtn.innerHTML = '<span class="play-icon">▶</span>Start';
+        if (playBtn) {
+            playBtn.classList.remove('playing');
+            playBtn.innerHTML = '<span class="play-icon">▶</span>Start';
+        }
 
         // Reset visual indicators
-        document.getElementById('beatIndicator').classList.remove('active', 'pulse');
+        const beatIndicator = document.getElementById('beatIndicator');
+        if (beatIndicator) {
+            beatIndicator.classList.remove('active', 'pulse');
+        }
+        
         document.querySelectorAll('.beat-dot').forEach(dot => {
             dot.classList.remove('active');
         });
@@ -322,10 +356,12 @@ class Metronome {
         const eighthDots = document.querySelectorAll('.eighth-dot');
 
         // Pulse animation
-        beatIndicator.classList.add('pulse');
-        setTimeout(() => {
-            beatIndicator.classList.remove('pulse');
-        }, 100);
+        if (beatIndicator) {
+            beatIndicator.classList.add('pulse');
+            setTimeout(() => {
+                beatIndicator.classList.remove('pulse');
+            }, 100);
+        }
 
         // Update beat dots
         beatDots.forEach((dot, index) => {
@@ -354,10 +390,12 @@ class Metronome {
         }
 
         // Highlight first beat differently (only when emphasis is enabled)
-        if (this.currentBeat === 0 && this.emphasisEnabled) {
-            beatIndicator.classList.add('active');
-        } else {
-            beatIndicator.classList.remove('active');
+        if (beatIndicator) {
+            if (this.currentBeat === 0 && this.emphasisEnabled) {
+                beatIndicator.classList.add('active');
+            } else {
+                beatIndicator.classList.remove('active');
+            }
         }
 
         console.log('Visual indicator updated - Beat:', this.currentBeat + 1, 'of', this.timeSignature, 'Eighth:', this.currentEighth + 1);
@@ -410,6 +448,11 @@ class DanceMoveGenerator {
         // Generate sequence
         document.getElementById('generateSequence').addEventListener('click', () => {
             this.generateSequence();
+        });
+
+        // Practice sequence
+        document.getElementById('practiceSequenceBtn').addEventListener('click', () => {
+            this.startPractice();
         });
 
         // Save configuration
@@ -559,6 +602,12 @@ class DanceMoveGenerator {
         
         this.displaySequence();
         this.startSequenceAnimation();
+        
+        // Show practice button
+        const practiceBtn = document.getElementById('practiceSequenceBtn');
+        if (practiceBtn) {
+            practiceBtn.style.display = 'block';
+        }
     }
 
     displaySequence() {
@@ -675,6 +724,19 @@ class DanceMoveGenerator {
         } catch (error) {
             this.showNotification(`Error loading configuration: ${error.message}`, 'error');
         }
+    }
+
+    startPractice() {
+        if (this.currentSequence.length === 0) {
+            this.showNotification('Please generate a sequence first.', 'error');
+            return;
+        }
+        
+        // Save sequence to localStorage
+        localStorage.setItem('practiceSequence', JSON.stringify(this.currentSequence));
+        
+        // Navigate to practice page
+        window.location.href = 'practice.html';
     }
 
     showNotification(message, type = 'info') {

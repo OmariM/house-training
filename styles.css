@@ -555,6 +555,159 @@ body {
     border-color: #667eea;
 }
 
+/* Practice Page Styles */
+.practice-container {
+    max-width: 800px;
+    padding: 1rem;
+}
+
+.practice-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.back-btn {
+    padding: 0.5rem 1rem;
+    background: #6b7280;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background: #4b5563;
+}
+
+.practice-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #374151;
+}
+
+.practice-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.metronome-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.sequence-practice-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.count-display {
+    text-align: center;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    color: white;
+}
+
+.count-number {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.count-label {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-top: 0.5rem;
+}
+
+.sequence-display-practice {
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.practice-move {
+    padding: 0.75rem 1rem;
+    background: #f3f4f6;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    opacity: 0.3;
+}
+
+.practice-move.active {
+    background: #10b981;
+    color: white;
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.practice-move.completed {
+    background: #667eea;
+    color: white;
+    opacity: 0.8;
+}
+
+.current-move-display {
+    text-align: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.current-move-label {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.current-move {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+/* Practice button styles */
+.practice-btn {
+    padding: 0.75rem 1.5rem;
+    background: #f59e0b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 1rem;
+}
+
+.practice-btn:hover {
+    background: #d97706;
+    transform: translateY(-1px);
+}
+
 /* Responsive Design */
 @media (max-width: 600px) {
     .container {
@@ -575,6 +728,15 @@ body {
 
     .transition-input span {
         text-align: center;
+    }
+
+    .practice-main {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .practice-container {
+        padding: 0.5rem;
     }
 }
 
