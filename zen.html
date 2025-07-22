@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen Mode - House Training</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container zen-container">
+        <header class="zen-header">
+            <button id="backBtn" class="back-btn">← Back</button>
+            <h2>Zen Mode</h2>
+            <div class="zen-subtitle">Continuous Flow</div>
+        </header>
+
+        <main class="zen-main">
+            <div class="zen-metronome-section">
+                <div class="zen-bpm-display">
+                    <div class="zen-bpm-value" id="bpmDisplay">120</div>
+                    <div class="zen-bpm-label">BPM</div>
+                </div>
+
+                <div class="zen-playback-controls">
+                    <button class="zen-play-btn" id="playBtn">
+                        <span class="zen-play-icon">▶</span>
+                        <span class="zen-pause-icon">⏸</span>
+                        Start Flow
+                    </button>
+                    <button class="zen-stop-btn" id="stopBtn">Stop</button>
+                </div>
+
+                <div class="zen-settings">
+                    <select id="timeSignature">
+                        <option value="4">4/4</option>
+                        <option value="3">3/4</option>
+                        <option value="6">6/8</option>
+                        <option value="2">2/4</option>
+                    </select>
+                    <select id="soundType">
+                        <option value="click">Click</option>
+                        <option value="beep">Beep</option>
+                        <option value="tick">Tick</option>
+                    </select>
+                    <button id="toggleSubdivision" class="zen-subdivision-btn">
+                        <span class="zen-subdivision-on">8th Notes</span>
+                        <span class="zen-subdivision-off">Quarter Notes</span>
+                    </button>
+                    <button id="toggleEmphasis" class="zen-emphasis-btn">
+                        <span class="zen-emphasis-on">Emphasize 1</span>
+                        <span class="zen-emphasis-off">Equal Beats</span>
+                    </button>
+                </div>
+
+                <div class="zen-visualizer">
+                    <div class="zen-beat-indicator" id="beatIndicator"></div>
+                    <div class="zen-beat-dots">
+                        <div class="zen-beat-dot" data-beat="1"></div>
+                        <div class="zen-beat-dot" data-beat="2"></div>
+                        <div class="zen-beat-dot" data-beat="3"></div>
+                        <div class="zen-beat-dot" data-beat="4"></div>
+                    </div>
+                    <div class="zen-eighth-notes">
+                        <div class="zen-eighth-dot" data-eighth="1"></div>
+                        <div class="zen-eighth-dot" data-eighth="2"></div>
+                        <div class="zen-eighth-dot" data-eighth="3"></div>
+                        <div class="zen-eighth-dot" data-eighth="4"></div>
+                        <div class="zen-eighth-dot" data-eighth="5"></div>
+                        <div class="zen-eighth-dot" data-eighth="6"></div>
+                        <div class="zen-eighth-dot" data-eighth="7"></div>
+                        <div class="zen-eighth-dot" data-eighth="8"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="zen-sequence-section">
+                <div class="zen-count-display">
+                    <div class="zen-count-number" id="countDisplay">1</div>
+                    <div class="zen-count-label">Count</div>
+                </div>
+
+                <div class="zen-sequence-display" id="sequenceDisplayPractice">
+                    <!-- Sequence moves will be populated here -->
+                </div>
+
+                <div class="zen-current-move-display">
+                    <div class="zen-current-move-label">Current Move:</div>
+                    <div class="zen-current-move" id="currentMove">Ready</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="practice.js"></script>
+</body>
+</html> 

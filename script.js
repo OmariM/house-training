@@ -776,6 +776,7 @@ class DanceMoveGenerator {
         
         // Save sequence to localStorage
         localStorage.setItem('practiceSequence', JSON.stringify(this.currentSequence));
+        localStorage.setItem('zenMode', 'false');
         
         // Navigate to practice page
         window.location.href = 'practice.html';
@@ -819,8 +820,8 @@ class DanceMoveGenerator {
         localStorage.setItem('practiceSequence', JSON.stringify(this.currentSequence));
         localStorage.setItem('zenMode', 'true');
         
-        // Navigate to practice page
-        window.location.href = 'practice.html';
+        // Navigate to zen page
+        window.location.href = 'zen.html';
     }
 
     showNotification(message, type = 'info') {

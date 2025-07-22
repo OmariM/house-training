@@ -1,6 +1,7 @@
 class PracticeMode {
     constructor() {
         this.sequence = [];
+        this.originalSequence = []; // Track the original sequence
         this.currentMoveIndex = 0;
         this.currentCount = 1;
         this.isInIntro = true;
@@ -19,6 +20,9 @@ class PracticeMode {
         const savedSequence = localStorage.getItem('practiceSequence');
         if (savedSequence) {
             this.sequence = JSON.parse(savedSequence);
+            this.originalSequence = [...this.sequence]; // Save a copy of the original sequence
+            console.log('Sequence loaded from storage:', this.sequence);
+            console.log('Original sequence saved:', this.originalSequence);
         }
         
         // Check if zen mode is enabled
@@ -26,13 +30,8 @@ class PracticeMode {
         this.isZenMode = zenMode === 'true';
         console.log('Zen mode enabled:', this.isZenMode);
         
-        // Update title and header for zen mode
-        if (this.isZenMode) {
-            document.title = 'Zen Mode - House Training';
-            const headerTitle = document.querySelector('.practice-header h2');
-            if (headerTitle) {
-                headerTitle.textContent = 'Zen Mode';
-            }
+        if (!this.isZenMode) {
+            console.log('Practice mode: Sequence will remain constant throughout session');
         }
     }
 
@@ -97,11 +96,17 @@ class PracticeMode {
             container.appendChild(moveElement);
         });
         
-        console.log('Sequence displayed:', this.sequence);
+        console.log('Sequence displayed:', this.sequence, 'Mode:', this.isZenMode ? 'Zen' : 'Practice');
     }
 
     generateNewSequence() {
-        console.log('generateNewSequence() called');
+        console.log('generateNewSequence() called - Zen mode only!');
+        
+        // Double-check we're in zen mode
+        if (!this.isZenMode) {
+            console.error('ERROR: generateNewSequence() called in practice mode! This should not happen.');
+            return;
+        }
         
         // Load moves and transitions from localStorage
         const savedConfig = localStorage.getItem('danceConfig');
@@ -187,6 +192,13 @@ class PracticeMode {
                 if (this.introCount === 1 && this.isZenMode) {
                     console.log('Zen mode active, generating new sequence on first beat of intro...');
                     this.generateNewSequence();
+                } else if (this.introCount === 1 && !this.isZenMode) {
+                    // In practice mode, ensure we're using the original sequence
+                    if (JSON.stringify(this.sequence) !== JSON.stringify(this.originalSequence)) {
+                        console.log('Practice mode: Restoring original sequence');
+                        this.sequence = [...this.originalSequence];
+                        this.displaySequence();
+                    }
                 }
                 
                 // Show moves but fade them
@@ -228,6 +240,11 @@ class PracticeMode {
                     // Check if we've completed the final move
                     if (this.currentMoveIndex >= this.sequence.length) {
                         console.log('Sequence complete! Current index:', this.currentMoveIndex, 'Sequence length:', this.sequence.length);
+                        if (this.isZenMode) {
+                            console.log('Zen mode: Will generate new sequence after intro');
+                        } else {
+                            console.log('Practice mode: Will repeat same sequence after intro');
+                        }
                         this.isInIntro = true;
                         this.introCount = 1;
                     }
