@@ -136,6 +136,30 @@ body {
     transform: scale(1.2);
 }
 
+.eighth-notes {
+    display: flex;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+}
+
+.eighth-dot {
+    width: 6px;
+    height: 6px;
+    background: #d1d5db;
+    border-radius: 50%;
+    transition: all 0.1s ease;
+}
+
+.eighth-dot.active {
+    background: #f59e0b;
+    transform: scale(1.3);
+}
+
+.eighth-dot.on-beat {
+    background: #e5e7eb;
+    border: 1px solid #9ca3af;
+}
+
 .settings {
     display: flex;
     gap: 1rem;
@@ -155,6 +179,88 @@ body {
 .settings select:focus {
     outline: none;
     border-color: #667eea;
+}
+
+.subdivision-btn {
+    padding: 0.5rem 0.75rem;
+    border: 2px solid #667eea;
+    background: #667eea;
+    color: white;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+}
+
+.subdivision-btn:hover {
+    background: #5a6fd8;
+    border-color: #5a6fd8;
+}
+
+.subdivision-btn.quarter-mode {
+    background: white;
+    color: #667eea;
+}
+
+.subdivision-btn.quarter-mode:hover {
+    background: #f8fafc;
+}
+
+.subdivision-btn .subdivision-off {
+    display: none;
+}
+
+.subdivision-btn.quarter-mode .subdivision-on {
+    display: none;
+}
+
+.subdivision-btn.quarter-mode .subdivision-off {
+    display: inline;
+}
+
+.emphasis-btn {
+    padding: 0.5rem 0.75rem;
+    border: 2px solid #10b981;
+    background: #10b981;
+    color: white;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+}
+
+.emphasis-btn:hover {
+    background: #059669;
+    border-color: #059669;
+}
+
+.emphasis-btn.equal-mode {
+    background: white;
+    color: #10b981;
+}
+
+.emphasis-btn.equal-mode:hover {
+    background: #f8fafc;
+}
+
+.emphasis-btn .emphasis-off {
+    display: none;
+}
+
+.emphasis-btn.equal-mode .emphasis-on {
+    display: none;
+}
+
+.emphasis-btn.equal-mode .emphasis-off {
+    display: inline;
 }
 
 /* Dance Move Generator Styles */

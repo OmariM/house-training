@@ -4,8 +4,11 @@ class Metronome {
         this.isPlaying = false;
         this.interval = null;
         this.currentBeat = 0;
+        this.currentEighth = 0;
         this.timeSignature = 4;
         this.soundType = 'click';
+        this.subdivisionEnabled = true;
+        this.emphasisEnabled = true;
         this.audioContext = null;
         this.nextNoteTime = 0.0;
         this.scheduleAheadTime = 0.1;
@@ -53,6 +56,16 @@ class Metronome {
             this.soundType = e.target.value;
         });
 
+        // Subdivision toggle
+        document.getElementById('toggleSubdivision').addEventListener('click', () => {
+            this.toggleSubdivision();
+        });
+
+        // Emphasis toggle
+        document.getElementById('toggleEmphasis').addEventListener('click', () => {
+            this.toggleEmphasis();
+        });
+
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             // Don't trigger shortcuts if user is typing in an input field
@@ -86,6 +99,40 @@ class Metronome {
         // BPM display removed for minimal UI
     }
 
+    toggleSubdivision() {
+        this.subdivisionEnabled = !this.subdivisionEnabled;
+        
+        // Update button appearance
+        const button = document.getElementById('toggleSubdivision');
+        if (this.subdivisionEnabled) {
+            button.classList.remove('quarter-mode');
+        } else {
+            button.classList.add('quarter-mode');
+        }
+        
+        // Update visual display
+        this.updateVisualIndicator();
+        
+        console.log('Subdivision toggled:', this.subdivisionEnabled ? '8th notes' : 'Quarter notes');
+    }
+
+    toggleEmphasis() {
+        this.emphasisEnabled = !this.emphasisEnabled;
+        
+        // Update button appearance
+        const button = document.getElementById('toggleEmphasis');
+        if (this.emphasisEnabled) {
+            button.classList.remove('equal-mode');
+        } else {
+            button.classList.add('equal-mode');
+        }
+        
+        // Update visual display
+        this.updateVisualIndicator();
+        
+        console.log('Emphasis toggled:', this.emphasisEnabled ? 'First beat emphasized' : 'Equal beats');
+    }
+
     togglePlay() {
         if (this.isPlaying) {
             this.stop();
@@ -113,6 +160,7 @@ class Metronome {
     startMetronome() {
         this.isPlaying = true;
         this.currentBeat = 0;
+        this.currentEighth = 0;
         this.nextNoteTime = this.audioContext.currentTime;
         
         const playBtn = document.getElementById('playBtn');
@@ -130,6 +178,7 @@ class Metronome {
     stop() {
         this.isPlaying = false;
         this.currentBeat = 0;
+        this.currentEighth = 0;
         
         if (this.schedulerInterval) {
             clearInterval(this.schedulerInterval);
@@ -143,6 +192,9 @@ class Metronome {
         // Reset visual indicators
         document.getElementById('beatIndicator').classList.remove('active', 'pulse');
         document.querySelectorAll('.beat-dot').forEach(dot => {
+            dot.classList.remove('active');
+        });
+        document.querySelectorAll('.eighth-dot').forEach(dot => {
             dot.classList.remove('active');
         });
     }
@@ -161,8 +213,22 @@ class Metronome {
 
     nextNote() {
         const secondsPerBeat = 60.0 / this.bpm;
-        this.nextNoteTime += secondsPerBeat;
-        this.currentBeat = (this.currentBeat + 1) % this.timeSignature;
+        
+        if (this.subdivisionEnabled) {
+            // 8th note mode
+            this.nextNoteTime += secondsPerBeat / 2;
+            this.currentEighth = (this.currentEighth + 1) % (this.timeSignature * 2);
+            
+            // Update beat counter every 2 eighth notes
+            if (this.currentEighth % 2 === 0) {
+                this.currentBeat = (this.currentBeat + 1) % this.timeSignature;
+            }
+        } else {
+            // Quarter note mode
+            this.nextNoteTime += secondsPerBeat;
+            this.currentBeat = (this.currentBeat + 1) % this.timeSignature;
+            this.currentEighth = this.currentBeat * 2; // Keep eighth counter in sync for display
+        }
     }
 
     playSound(time) {
@@ -178,24 +244,65 @@ class Metronome {
             oscillator.connect(gainNode);
             gainNode.connect(this.audioContext.destination);
 
-            // Configure sound based on type
+            // Determine if this is a main beat (even eighth notes) or off-beat (odd eighth notes)
+            const isMainBeat = this.currentEighth % 2 === 0;
+            
+            // In quarter note mode, only play on main beats
+            if (!this.subdivisionEnabled && !isMainBeat) {
+                return;
+            }
+            
+            // Determine if this is the first beat of the measure
+            const isFirstBeat = this.currentBeat === 0;
+            
+            // Configure sound based on type, beat type, and emphasis
             switch (this.soundType) {
                 case 'click':
-                    oscillator.frequency.setValueAtTime(800, time);
+                    if (isMainBeat) {
+                        if (isFirstBeat && this.emphasisEnabled) {
+                            oscillator.frequency.setValueAtTime(900, time);
+                            gainNode.gain.setValueAtTime(0.7, time);
+                        } else {
+                            oscillator.frequency.setValueAtTime(800, time);
+                            gainNode.gain.setValueAtTime(0.5, time);
+                        }
+                    } else {
+                        oscillator.frequency.setValueAtTime(600, time);
+                        gainNode.gain.setValueAtTime(0.3, time);
+                    }
                     oscillator.type = 'sine';
-                    gainNode.gain.setValueAtTime(0.5, time);
                     gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
                     break;
                 case 'beep':
-                    oscillator.frequency.setValueAtTime(1000, time);
+                    if (isMainBeat) {
+                        if (isFirstBeat && this.emphasisEnabled) {
+                            oscillator.frequency.setValueAtTime(1200, time);
+                            gainNode.gain.setValueAtTime(0.4, time);
+                        } else {
+                            oscillator.frequency.setValueAtTime(1000, time);
+                            gainNode.gain.setValueAtTime(0.3, time);
+                        }
+                    } else {
+                        oscillator.frequency.setValueAtTime(800, time);
+                        gainNode.gain.setValueAtTime(0.2, time);
+                    }
                     oscillator.type = 'square';
-                    gainNode.gain.setValueAtTime(0.3, time);
                     gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.05);
                     break;
                 case 'tick':
-                    oscillator.frequency.setValueAtTime(600, time);
+                    if (isMainBeat) {
+                        if (isFirstBeat && this.emphasisEnabled) {
+                            oscillator.frequency.setValueAtTime(700, time);
+                            gainNode.gain.setValueAtTime(0.8, time);
+                        } else {
+                            oscillator.frequency.setValueAtTime(600, time);
+                            gainNode.gain.setValueAtTime(0.6, time);
+                        }
+                    } else {
+                        oscillator.frequency.setValueAtTime(500, time);
+                        gainNode.gain.setValueAtTime(0.4, time);
+                    }
                     oscillator.type = 'triangle';
-                    gainNode.gain.setValueAtTime(0.6, time);
                     gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.08);
                     break;
             }
@@ -203,7 +310,7 @@ class Metronome {
             oscillator.start(time);
             oscillator.stop(time + 0.1);
             
-            console.log('Sound played at time:', time, 'BPM:', this.bpm);
+            console.log('Sound played at time:', time, 'BPM:', this.bpm, 'Eighth:', this.currentEighth, 'Main beat:', isMainBeat, 'First beat:', isFirstBeat, 'Emphasis:', this.emphasisEnabled);
         } catch (error) {
             console.error('Error playing sound:', error);
         }
@@ -212,6 +319,7 @@ class Metronome {
     updateVisualIndicator() {
         const beatIndicator = document.getElementById('beatIndicator');
         const beatDots = document.querySelectorAll('.beat-dot');
+        const eighthDots = document.querySelectorAll('.eighth-dot');
 
         // Pulse animation
         beatIndicator.classList.add('pulse');
@@ -227,14 +335,32 @@ class Metronome {
             }
         });
 
-        // Highlight first beat differently
-        if (this.currentBeat === 0) {
+        // Update eighth note dots
+        eighthDots.forEach((dot, index) => {
+            dot.classList.remove('active', 'on-beat');
+            if (index === this.currentEighth) {
+                dot.classList.add('active');
+            }
+            // Mark main beats (even eighth notes) with a different style
+            if (index % 2 === 0) {
+                dot.classList.add('on-beat');
+            }
+        });
+        
+        // Hide/show eighth notes based on subdivision setting
+        const eighthNotesContainer = document.querySelector('.eighth-notes');
+        if (eighthNotesContainer) {
+            eighthNotesContainer.style.display = this.subdivisionEnabled ? 'flex' : 'none';
+        }
+
+        // Highlight first beat differently (only when emphasis is enabled)
+        if (this.currentBeat === 0 && this.emphasisEnabled) {
             beatIndicator.classList.add('active');
         } else {
             beatIndicator.classList.remove('active');
         }
 
-        console.log('Visual indicator updated - Beat:', this.currentBeat + 1, 'of', this.timeSignature);
+        console.log('Visual indicator updated - Beat:', this.currentBeat + 1, 'of', this.timeSignature, 'Eighth:', this.currentEighth + 1);
     }
 
     testSound() {
