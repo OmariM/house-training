@@ -33,24 +33,7 @@ class Metronome {
             this.setBpm(parseInt(e.target.value) || 120);
         });
 
-        // BPM preset buttons
-        document.querySelectorAll('.bpm-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                this.setBpm(parseInt(btn.dataset.bpm));
-                bpmInput.value = this.bpm;
-            });
-        });
 
-        // Tempo controls
-        document.getElementById('decreaseBpm').addEventListener('click', () => {
-            this.setBpm(Math.max(40, this.bpm - 1));
-            bpmInput.value = this.bpm;
-        });
-
-        document.getElementById('increaseBpm').addEventListener('click', () => {
-            this.setBpm(Math.min(200, this.bpm + 1));
-            bpmInput.value = this.bpm;
-        });
 
         // Playback controls
         document.getElementById('playBtn').addEventListener('click', () => {
@@ -77,12 +60,6 @@ class Metronome {
                 this.togglePlay();
             } else if (e.code === 'Escape') {
                 this.stop();
-            } else if (e.code === 'ArrowUp') {
-                this.setBpm(Math.min(200, this.bpm + 1));
-                bpmInput.value = this.bpm;
-            } else if (e.code === 'ArrowDown') {
-                this.setBpm(Math.max(40, this.bpm - 1));
-                bpmInput.value = this.bpm;
             } else if (e.code === 'KeyT') {
                 e.preventDefault();
                 this.testSound();
@@ -101,7 +78,7 @@ class Metronome {
     }
 
     updateDisplay() {
-        document.getElementById('bpmDisplay').textContent = this.bpm;
+        // BPM display removed for minimal UI
     }
 
     togglePlay() {
@@ -286,7 +263,5 @@ console.log(`
 🎵 Metronome Controls:
 - Space: Play/Pause
 - Escape: Stop
-- Arrow Up/Down: Adjust BPM
-- Click the BPM buttons for preset tempos
-- Use the +/- buttons for fine control
+- T: Test sound
 `); 

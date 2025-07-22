@@ -9,52 +9,39 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🎵 Metronome</h1>
-            <p>Set your tempo and keep the rhythm</p>
-        </header>
-
         <main class="metronome-container">
-            <div class="bpm-display">
-                <div class="bpm-value" id="bpmDisplay">120</div>
-                <div class="bpm-label">BPM</div>
+            <div class="bpm-input-group">
+                <input 
+                    type="number" 
+                    id="bpmInput" 
+                    min="40" 
+                    max="200" 
+                    value="120"
+                    placeholder="BPM"
+                >
             </div>
 
-            <div class="controls">
-                <div class="bpm-input-group">
-                    <label for="bpmInput">Set BPM:</label>
-                    <div class="input-wrapper">
-                        <input 
-                            type="number" 
-                            id="bpmInput" 
-                            min="40" 
-                            max="200" 
-                            value="120"
-                            placeholder="Enter BPM"
-                        >
-                        <div class="bpm-buttons">
-                            <button class="bpm-btn" data-bpm="60">60</button>
-                            <button class="bpm-btn" data-bpm="90">90</button>
-                            <button class="bpm-btn" data-bpm="120">120</button>
-                            <button class="bpm-btn" data-bpm="140">140</button>
-                            <button class="bpm-btn" data-bpm="160">160</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="playback-controls">
+                <button class="play-btn" id="playBtn">
+                    <span class="play-icon">▶</span>
+                    <span class="pause-icon">⏸</span>
+                    Start
+                </button>
+                <button class="stop-btn" id="stopBtn">Stop</button>
+            </div>
 
-                <div class="tempo-controls">
-                    <button class="tempo-btn" id="decreaseBpm">-</button>
-                    <button class="tempo-btn" id="increaseBpm">+</button>
-                </div>
-
-                <div class="playback-controls">
-                    <button class="play-btn" id="playBtn">
-                        <span class="play-icon">▶</span>
-                        <span class="pause-icon">⏸</span>
-                        Start
-                    </button>
-                    <button class="stop-btn" id="stopBtn">Stop</button>
-                </div>
+            <div class="settings">
+                <select id="timeSignature">
+                    <option value="4">4/4</option>
+                    <option value="3">3/4</option>
+                    <option value="6">6/8</option>
+                    <option value="2">2/4</option>
+                </select>
+                <select id="soundType">
+                    <option value="click">Click</option>
+                    <option value="beep">Beep</option>
+                    <option value="tick">Tick</option>
+                </select>
             </div>
 
             <div class="visualizer">
@@ -66,31 +53,7 @@
                     <div class="beat-dot" data-beat="4"></div>
                 </div>
             </div>
-
-            <div class="settings">
-                <div class="setting-group">
-                    <label for="timeSignature">Time Signature:</label>
-                    <select id="timeSignature">
-                        <option value="4">4/4</option>
-                        <option value="3">3/4</option>
-                        <option value="6">6/8</option>
-                        <option value="2">2/4</option>
-                    </select>
-                </div>
-                <div class="setting-group">
-                    <label for="soundType">Sound:</label>
-                    <select id="soundType">
-                        <option value="click">Click</option>
-                        <option value="beep">Beep</option>
-                        <option value="tick">Tick</option>
-                    </select>
-                </div>
-            </div>
         </main>
-
-        <footer>
-            <p>Built with ❤️ for house training</p>
-        </footer>
     </div>
 
     <script src="script.js"></script>
