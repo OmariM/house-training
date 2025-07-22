@@ -801,9 +801,9 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     min-height: 100vh;
-    color: white;
+    color: #1e293b;
 }
 
 .zen-header {
@@ -812,12 +812,12 @@ body {
     gap: 1rem;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 2px solid #cbd5e1;
 }
 
 .zen-subtitle {
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: #64748b;
     font-weight: 400;
     margin-left: auto;
 }
@@ -826,7 +826,7 @@ body {
     margin: 0;
     font-size: 1.875rem;
     font-weight: 600;
-    color: white;
+    color: #1e293b;
 }
 
 .zen-main {
@@ -837,19 +837,21 @@ body {
 }
 
 .zen-metronome-section {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
     padding: 2rem;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .zen-sequence-section {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
     padding: 2rem;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -863,13 +865,13 @@ body {
 .zen-bpm-value {
     font-size: 3rem;
     font-weight: 700;
-    color: white;
+    color: #1e293b;
     margin-bottom: 0.5rem;
 }
 
 .zen-bpm-label {
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: #64748b;
     font-weight: 500;
 }
 
@@ -891,23 +893,23 @@ body {
 }
 
 .zen-play-btn {
-    background: rgba(255, 255, 255, 0.2);
+    background: #475569;
     color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid #64748b;
 }
 
 .zen-play-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: #334155;
     transform: translateY(-1px);
 }
 
 .zen-stop-btn {
-    background: rgba(239, 68, 68, 0.8);
+    background: #dc2626;
     color: white;
 }
 
 .zen-stop-btn:hover {
-    background: rgba(239, 68, 68, 1);
+    background: #b91c1c;
     transform: translateY(-1px);
 }
 
@@ -920,51 +922,77 @@ body {
 
 .zen-settings select, .zen-subdivision-btn, .zen-emphasis-btn {
     padding: 0.5rem 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid #cbd5e1;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: white;
+    color: #475569;
     font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.2s ease;
+    position: relative;
 }
 
 .zen-settings select:hover, .zen-subdivision-btn:hover, .zen-emphasis-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: #f1f5f9;
+    border-color: #94a3b8;
 }
 
 .zen-settings select option {
-    background: #1e293b;
-    color: white;
+    background: white;
+    color: #475569;
+}
+
+/* Zen mode toggle button text visibility */
+.zen-subdivision-btn .zen-subdivision-off,
+.zen-emphasis-btn .zen-emphasis-off {
+    display: none;
+}
+
+.zen-subdivision-btn.quarter-mode .zen-subdivision-on {
+    display: none;
+}
+
+.zen-subdivision-btn.quarter-mode .zen-subdivision-off {
+    display: inline;
+}
+
+.zen-emphasis-btn.equal-mode .zen-emphasis-on {
+    display: none;
+}
+
+.zen-emphasis-btn.equal-mode .zen-emphasis-off {
+    display: inline;
 }
 
 .zen-visualizer {
     position: relative;
     height: 120px;
-    background: rgba(255, 255, 255, 0.05);
+    background: #f8fafc;
     border-radius: 8px;
     padding: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 1px solid #e2e8f0;
 }
 
 .zen-beat-indicator {
     width: 60px;
     height: 60px;
-    background: rgba(255, 255, 255, 0.2);
+    background: #cbd5e1;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
     font-weight: 600;
-    color: white;
+    color: #475569;
     transition: all 0.1s ease;
 }
 
 .zen-beat-indicator.active {
-    background: rgba(255, 255, 255, 0.4);
+    background: #64748b;
+    color: white;
     transform: scale(1.1);
 }
 
@@ -980,13 +1008,13 @@ body {
 .zen-beat-dot {
     width: 12px;
     height: 12px;
-    background: rgba(255, 255, 255, 0.3);
+    background: #cbd5e1;
     border-radius: 50%;
     transition: all 0.1s ease;
 }
 
 .zen-beat-dot.active {
-    background: rgba(255, 255, 255, 0.8);
+    background: #475569;
     transform: scale(1.2);
 }
 
@@ -1002,34 +1030,34 @@ body {
 .zen-eighth-dot {
     width: 8px;
     height: 8px;
-    background: rgba(255, 255, 255, 0.2);
+    background: #e2e8f0;
     border-radius: 50%;
     transition: all 0.1s ease;
 }
 
 .zen-eighth-dot.active {
-    background: rgba(255, 255, 255, 0.6);
+    background: #94a3b8;
     transform: scale(1.3);
 }
 
 .zen-count-display {
     text-align: center;
     padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: #f8fafc;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid #e2e8f0;
 }
 
 .zen-count-number {
     font-size: 3rem;
     font-weight: 700;
-    color: white;
+    color: #1e293b;
     margin-bottom: 0.5rem;
 }
 
 .zen-count-label {
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: #64748b;
     font-weight: 500;
 }
 
@@ -1043,14 +1071,14 @@ body {
 .zen-current-move-display {
     text-align: center;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: #f8fafc;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid #e2e8f0;
 }
 
 .zen-current-move-label {
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: #64748b;
     font-weight: 500;
     margin-bottom: 0.5rem;
 }
@@ -1058,5 +1086,37 @@ body {
 .zen-current-move {
     font-size: 1.25rem;
     font-weight: 600;
-    color: white;
+    color: #1e293b;
+}
+
+/* Zen mode practice move styles */
+.zen-sequence-display .practice-move {
+    padding: 0.75rem 1rem;
+    background: #f1f5f9;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: #64748b;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+}
+
+.zen-sequence-display .practice-move.active {
+    background: #dbeafe;
+    color: #1e40af;
+    border-left-color: #3b82f6;
+    font-weight: 600;
+}
+
+.zen-sequence-display .practice-move.completed {
+    background: #dcfce7;
+    color: #166534;
+    border-left-color: #22c55e;
+    opacity: 0.8;
+}
+
+/* Zen mode faded text for intro phase */
+.zen-sequence-display .practice-move[style*="opacity: 0.3"] {
+    color: #475569 !important;
+    background: #f8fafc !important;
+    border-left-color: #cbd5e1 !important;
 } 
