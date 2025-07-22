@@ -9,6 +9,8 @@ class PracticeMode {
         this.metronome = null;
         this.practiceInterval = null;
         this.isZenMode = false;
+        this.iterationCount = 0; // Track iterations for zen mode fade
+        this.uiFaded = false; // Track if UI has been faded
         
         this.loadSequenceFromStorage();
         this.setupEventListeners();
@@ -40,6 +42,16 @@ class PracticeMode {
         document.getElementById('backBtn').addEventListener('click', () => {
             window.location.href = 'index.html';
         });
+        
+        // Stop button - restore UI if faded
+        const stopBtn = document.getElementById('stopBtn');
+        if (stopBtn) {
+            stopBtn.addEventListener('click', () => {
+                if (this.uiFaded) {
+                    this.restoreUI();
+                }
+            });
+        }
     }
 
     initializeMetronome() {
@@ -241,7 +253,14 @@ class PracticeMode {
                     if (this.currentMoveIndex >= this.sequence.length) {
                         console.log('Sequence complete! Current index:', this.currentMoveIndex, 'Sequence length:', this.sequence.length);
                         if (this.isZenMode) {
-                            console.log('Zen mode: Will generate new sequence after intro');
+                            this.iterationCount++;
+                            console.log('Zen mode: Will generate new sequence after intro. Iteration:', this.iterationCount);
+                            
+                            // Fade UI after 3 iterations
+                            if (this.iterationCount >= 3 && !this.uiFaded) {
+                                console.log('Zen mode: Starting UI fade after 3 iterations');
+                                this.fadeUI();
+                            }
                         } else {
                             console.log('Practice mode: Will repeat same sequence after intro');
                         }
@@ -256,6 +275,136 @@ class PracticeMode {
                 }
             }
         }
+    }
+
+    fadeUI() {
+        this.uiFaded = true;
+        
+        // Elements to fade out (hide after 3 seconds)
+        const elementsToFade = [
+            '.zen-header',
+            '.zen-bpm-display',
+            '.zen-playback-controls .zen-play-btn',
+            '.zen-settings',
+            '.zen-count-display',
+            '.zen-current-move-display',
+            '.zen-visualizer'
+        ];
+        
+        // Elements to keep visible (stop button and sequence visualization)
+        const elementsToKeep = [
+            '.zen-stop-btn',
+            '.zen-sequence-display'
+        ];
+        
+        console.log('Starting UI fade animation...');
+        
+        // Fade out elements over 3 seconds
+        elementsToFade.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.style.transition = 'opacity 3s ease-out';
+                element.style.opacity = '0';
+                
+                // Hide element completely after fade
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 3000);
+            }
+        });
+        
+        // Keep essential elements visible
+        elementsToKeep.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.style.transition = 'opacity 3s ease-out';
+                element.style.opacity = '1';
+            }
+        });
+        
+        // Adjust layout after fade
+        setTimeout(() => {
+            this.adjustLayoutAfterFade();
+        }, 3000);
+    }
+    
+    adjustLayoutAfterFade() {
+        // Center the remaining elements
+        const container = document.querySelector('.zen-container');
+        const main = document.querySelector('.zen-main');
+        
+        if (container && main) {
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.justifyContent = 'center';
+            container.style.alignItems = 'center';
+            container.style.minHeight = '100vh';
+            
+            main.style.display = 'flex';
+            main.style.flexDirection = 'column';
+            main.style.alignItems = 'center';
+            main.style.gap = '2rem';
+            main.style.width = '100%';
+            main.style.maxWidth = '600px';
+        }
+        
+        console.log('Layout adjusted for minimal zen experience');
+    }
+    
+    restoreUI() {
+        this.uiFaded = false;
+        
+        // Elements to restore
+        const elementsToRestore = [
+            '.zen-header',
+            '.zen-bpm-display',
+            '.zen-playback-controls .zen-play-btn',
+            '.zen-settings',
+            '.zen-count-display',
+            '.zen-current-move-display',
+            '.zen-visualizer'
+        ];
+        
+        console.log('Restoring UI elements...');
+        
+        // Restore all elements
+        elementsToRestore.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.style.display = '';
+                element.style.opacity = '1';
+                element.style.transition = 'opacity 0.5s ease-in';
+            }
+        });
+        
+        // Restore original layout
+        this.restoreOriginalLayout();
+        
+        console.log('UI elements restored');
+    }
+    
+    restoreOriginalLayout() {
+        const container = document.querySelector('.zen-container');
+        const main = document.querySelector('.zen-main');
+        
+        if (container && main) {
+            // Restore original container layout
+            container.style.display = '';
+            container.style.flexDirection = '';
+            container.style.justifyContent = '';
+            container.style.alignItems = '';
+            container.style.minHeight = '';
+            
+            // Restore original main layout
+            main.style.display = '';
+            main.style.flexDirection = '';
+            main.style.alignItems = '';
+            main.style.gap = '';
+            main.style.width = '';
+            main.style.maxWidth = '';
+        }
+        
+        console.log('Original layout restored');
     }
 }
 

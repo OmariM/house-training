@@ -1119,4 +1119,26 @@ body {
     color: #475569 !important;
     background: #f8fafc !important;
     border-left-color: #cbd5e1 !important;
+}
+
+/* Zen mode fade animation support */
+.zen-container.faded {
+    transition: all 3s ease-out;
+}
+
+.zen-main.faded {
+    transition: all 3s ease-out;
+}
+
+/* Stop button positioning for faded state */
+.zen-stop-btn {
+    position: relative;
+    z-index: 10;
+}
+
+/* Ensure sequence display and visualizer remain prominent */
+.zen-sequence-display,
+.zen-visualizer {
+    position: relative;
+    z-index: 5;
 } 
