@@ -54,6 +54,45 @@
                 </div>
             </div>
         </main>
+
+        <div class="dance-section">
+            <h3>Dance Move Generator</h3>
+            
+            <div class="move-input-section">
+                <div class="input-group">
+                    <input type="text" id="moveName" placeholder="Move name" />
+                    <button id="addMove">Add Move</button>
+                </div>
+                <div class="moves-list" id="movesList"></div>
+            </div>
+
+            <div class="transition-section">
+                <h4>Define Transitions</h4>
+                <div class="transition-input">
+                    <select id="fromMove">
+                        <option value="">From move...</option>
+                    </select>
+                    <span>→</span>
+                    <select id="toMove">
+                        <option value="">To move...</option>
+                    </select>
+                    <button id="addTransition">Add</button>
+                </div>
+                <div class="transitions-list" id="transitionsList"></div>
+            </div>
+
+            <div class="sequence-section">
+                <h4>Generate Sequence</h4>
+                <div class="sequence-input">
+                    <select id="startMove">
+                        <option value="">Starting move...</option>
+                    </select>
+                    <input type="number" id="sequenceLength" placeholder="Length" min="1" max="20" value="8" />
+                    <button id="generateSequence">Generate</button>
+                </div>
+                <div class="sequence-display" id="sequenceDisplay"></div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>

@@ -55,6 +55,11 @@ class Metronome {
 
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
+            // Don't trigger shortcuts if user is typing in an input field
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+                return;
+            }
+            
             if (e.code === 'Space') {
                 e.preventDefault();
                 this.togglePlay();
@@ -253,9 +258,223 @@ class Metronome {
     }
 }
 
-// Initialize the metronome when the page loads
+// Dance Move Generator Class
+class DanceMoveGenerator {
+    constructor() {
+        this.moves = [];
+        this.transitions = {};
+        this.currentSequence = [];
+        this.currentSequenceIndex = 0;
+        this.sequenceInterval = null;
+        
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        // Add move
+        document.getElementById('addMove').addEventListener('click', () => {
+            this.addMove();
+        });
+
+        // Add transition
+        document.getElementById('addTransition').addEventListener('click', () => {
+            this.addTransition();
+        });
+
+        // Generate sequence
+        document.getElementById('generateSequence').addEventListener('click', () => {
+            this.generateSequence();
+        });
+
+        // Enter key for move input
+        document.getElementById('moveName').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.addMove();
+            }
+        });
+    }
+
+    addMove() {
+        const moveName = document.getElementById('moveName').value.trim();
+        if (moveName && !this.moves.includes(moveName)) {
+            this.moves.push(moveName);
+            this.updateMovesList();
+            this.updateSelects();
+            document.getElementById('moveName').value = '';
+        }
+    }
+
+    removeMove(moveName) {
+        this.moves = this.moves.filter(move => move !== moveName);
+        
+        // Remove transitions involving this move
+        delete this.transitions[moveName];
+        Object.keys(this.transitions).forEach(fromMove => {
+            this.transitions[fromMove] = this.transitions[fromMove].filter(toMove => toMove !== moveName);
+        });
+        
+        this.updateMovesList();
+        this.updateSelects();
+        this.updateTransitionsList();
+    }
+
+    updateMovesList() {
+        const movesList = document.getElementById('movesList');
+        movesList.innerHTML = '';
+        
+        this.moves.forEach(move => {
+            const moveTag = document.createElement('div');
+            moveTag.className = 'move-tag';
+            moveTag.innerHTML = `
+                ${move}
+                <button class="remove" onclick="danceGenerator.removeMove('${move}')">×</button>
+            `;
+            movesList.appendChild(moveTag);
+        });
+    }
+
+    updateSelects() {
+        const selects = ['fromMove', 'toMove', 'startMove'];
+        selects.forEach(selectId => {
+            const select = document.getElementById(selectId);
+            const currentValue = select.value;
+            
+            select.innerHTML = `<option value="">${selectId === 'startMove' ? 'Starting move...' : selectId === 'fromMove' ? 'From move...' : 'To move...'}</option>`;
+            
+            this.moves.forEach(move => {
+                const option = document.createElement('option');
+                option.value = move;
+                option.textContent = move;
+                if (move === currentValue) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+        });
+    }
+
+    addTransition() {
+        const fromMove = document.getElementById('fromMove').value;
+        const toMove = document.getElementById('toMove').value;
+        
+        if (fromMove && toMove) {
+            if (!this.transitions[fromMove]) {
+                this.transitions[fromMove] = [];
+            }
+            
+            if (!this.transitions[fromMove].includes(toMove)) {
+                this.transitions[fromMove].push(toMove);
+                this.updateTransitionsList();
+            }
+        }
+    }
+
+    removeTransition(fromMove, toMove) {
+        if (this.transitions[fromMove]) {
+            this.transitions[fromMove] = this.transitions[fromMove].filter(move => move !== toMove);
+            if (this.transitions[fromMove].length === 0) {
+                delete this.transitions[fromMove];
+            }
+            this.updateTransitionsList();
+        }
+    }
+
+    updateTransitionsList() {
+        const transitionsList = document.getElementById('transitionsList');
+        transitionsList.innerHTML = '';
+        
+        Object.keys(this.transitions).forEach(fromMove => {
+            this.transitions[fromMove].forEach(toMove => {
+                const transitionItem = document.createElement('div');
+                transitionItem.className = 'transition-item';
+                transitionItem.innerHTML = `
+                    <span>${fromMove} → ${toMove}</span>
+                    <button class="remove" onclick="danceGenerator.removeTransition('${fromMove}', '${toMove}')">Remove</button>
+                `;
+                transitionsList.appendChild(transitionItem);
+            });
+        });
+    }
+
+    generateSequence() {
+        const startMove = document.getElementById('startMove').value;
+        const length = parseInt(document.getElementById('sequenceLength').value);
+        
+        if (!startMove || !this.moves.includes(startMove) || length < 1) {
+            return;
+        }
+        
+        this.currentSequence = [startMove];
+        this.currentSequenceIndex = 0;
+        
+        for (let i = 1; i < length; i++) {
+            const lastMove = this.currentSequence[i - 1];
+            const possibleMoves = this.transitions[lastMove] || [];
+            
+            if (possibleMoves.length === 0) {
+                // If no transitions defined, allow any move (including self)
+                const randomMove = this.moves[Math.floor(Math.random() * this.moves.length)];
+                this.currentSequence.push(randomMove);
+            } else {
+                const randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                this.currentSequence.push(randomMove);
+            }
+        }
+        
+        this.displaySequence();
+        this.startSequenceAnimation();
+    }
+
+    displaySequence() {
+        const sequenceDisplay = document.getElementById('sequenceDisplay');
+        sequenceDisplay.innerHTML = '';
+        
+        this.currentSequence.forEach((move, index) => {
+            const moveElement = document.createElement('div');
+            moveElement.className = 'sequence-move';
+            moveElement.textContent = move;
+            moveElement.dataset.index = index;
+            sequenceDisplay.appendChild(moveElement);
+        });
+    }
+
+    startSequenceAnimation() {
+        if (this.sequenceInterval) {
+            clearInterval(this.sequenceInterval);
+        }
+        
+        this.currentSequenceIndex = 0;
+        this.updateCurrentMove();
+        
+        // Change move every 2 seconds (adjust timing as needed)
+        this.sequenceInterval = setInterval(() => {
+            this.currentSequenceIndex = (this.currentSequenceIndex + 1) % this.currentSequence.length;
+            this.updateCurrentMove();
+        }, 2000);
+    }
+
+    updateCurrentMove() {
+        const moveElements = document.querySelectorAll('.sequence-move');
+        moveElements.forEach((element, index) => {
+            element.classList.remove('current');
+            if (index === this.currentSequenceIndex) {
+                element.classList.add('current');
+            }
+        });
+    }
+
+    stopSequenceAnimation() {
+        if (this.sequenceInterval) {
+            clearInterval(this.sequenceInterval);
+            this.sequenceInterval = null;
+        }
+    }
+}
+
+// Initialize the metronome and dance generator when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     new Metronome();
+    window.danceGenerator = new DanceMoveGenerator();
 });
 
 // Add some helpful instructions
@@ -264,4 +483,9 @@ console.log(`
 - Space: Play/Pause
 - Escape: Stop
 - T: Test sound
+
+💃 Dance Move Generator:
+- Add moves and define transitions
+- Generate random sequences
+- Watch the current move highlight
 `); 
