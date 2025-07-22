@@ -455,6 +455,11 @@ class DanceMoveGenerator {
             this.startPractice();
         });
 
+        // Zen mode
+        document.getElementById('zenModeBtn').addEventListener('click', () => {
+            this.startZenMode();
+        });
+
         // Save configuration
         document.getElementById('saveConfig').addEventListener('click', () => {
             this.saveConfiguration();
@@ -480,6 +485,7 @@ class DanceMoveGenerator {
             this.updateMovesList();
             this.updateSelects();
             document.getElementById('moveName').value = '';
+            this.saveConfigToStorage();
         }
     }
 
@@ -495,6 +501,7 @@ class DanceMoveGenerator {
         this.updateMovesList();
         this.updateSelects();
         this.updateTransitionsList();
+        this.saveConfigToStorage();
     }
 
     updateMovesList() {
@@ -510,6 +517,8 @@ class DanceMoveGenerator {
             `;
             movesList.appendChild(moveTag);
         });
+        
+        this.updateSequenceButtons();
     }
 
     updateSelects() {
@@ -544,6 +553,7 @@ class DanceMoveGenerator {
             if (!this.transitions[fromMove].includes(toMove)) {
                 this.transitions[fromMove].push(toMove);
                 this.updateTransitionsList();
+                this.saveConfigToStorage();
             }
         }
     }
@@ -555,6 +565,7 @@ class DanceMoveGenerator {
                 delete this.transitions[fromMove];
             }
             this.updateTransitionsList();
+            this.saveConfigToStorage();
         }
     }
 
@@ -573,6 +584,8 @@ class DanceMoveGenerator {
                 transitionsList.appendChild(transitionItem);
             });
         });
+        
+        this.updateSequenceButtons();
     }
 
     generateSequence() {
@@ -603,10 +616,10 @@ class DanceMoveGenerator {
         this.displaySequence();
         this.startSequenceAnimation();
         
-        // Show practice button
-        const practiceBtn = document.getElementById('practiceSequenceBtn');
-        if (practiceBtn) {
-            practiceBtn.style.display = 'block';
+        // Show sequence buttons
+        const sequenceButtons = document.querySelector('.sequence-buttons');
+        if (sequenceButtons) {
+            sequenceButtons.style.display = 'flex';
         }
     }
 
@@ -665,6 +678,9 @@ class DanceMoveGenerator {
         const configString = JSON.stringify(config, null, 2);
         const textarea = document.getElementById('configString');
         textarea.value = configString;
+        
+        // Save to localStorage for zen mode
+        localStorage.setItem('danceConfig', configString);
         
         // Select the text for easy copying
         textarea.select();
@@ -726,6 +742,32 @@ class DanceMoveGenerator {
         }
     }
 
+    saveConfigToStorage() {
+        const config = {
+            moves: this.moves,
+            transitions: this.transitions,
+            version: '1.0'
+        };
+        localStorage.setItem('danceConfig', JSON.stringify(config));
+    }
+
+    updateSequenceButtons() {
+        const sequenceButtons = document.querySelector('.sequence-buttons');
+        if (sequenceButtons) {
+            // Show buttons if there are moves and transitions
+            const hasMoves = this.moves.length > 0;
+            const hasTransitions = Object.keys(this.transitions).length > 0;
+            
+            if (hasMoves && hasTransitions) {
+                sequenceButtons.style.display = 'flex';
+                // Save config to localStorage for zen mode
+                this.saveConfigToStorage();
+            } else {
+                sequenceButtons.style.display = 'none';
+            }
+        }
+    }
+
     startPractice() {
         if (this.currentSequence.length === 0) {
             this.showNotification('Please generate a sequence first.', 'error');
@@ -734,6 +776,48 @@ class DanceMoveGenerator {
         
         // Save sequence to localStorage
         localStorage.setItem('practiceSequence', JSON.stringify(this.currentSequence));
+        
+        // Navigate to practice page
+        window.location.href = 'practice.html';
+    }
+
+    startZenMode() {
+        if (this.moves.length === 0) {
+            this.showNotification('Please add some moves first.', 'error');
+            return;
+        }
+        
+        if (Object.keys(this.transitions).length === 0) {
+            this.showNotification('Please add some transitions first.', 'error');
+            return;
+        }
+        
+        // Generate a random sequence for zen mode
+        const randomStartMove = this.moves[Math.floor(Math.random() * this.moves.length)];
+        const sequenceLength = parseInt(document.getElementById('sequenceLength').value) || 8;
+        
+        this.currentSequence = [randomStartMove];
+        
+        for (let i = 1; i < sequenceLength; i++) {
+            const lastMove = this.currentSequence[i - 1];
+            
+            // Get possible transitions for the last move
+            const possibleTransitions = this.transitions[lastMove] || [];
+            
+            if (possibleTransitions.length > 0) {
+                // Choose a random transition
+                const nextMove = possibleTransitions[Math.floor(Math.random() * possibleTransitions.length)];
+                this.currentSequence.push(nextMove);
+            } else {
+                // If no transitions defined, choose any move
+                const randomMove = this.moves[Math.floor(Math.random() * this.moves.length)];
+                this.currentSequence.push(randomMove);
+            }
+        }
+        
+        // Save sequence and zen mode flag to localStorage
+        localStorage.setItem('practiceSequence', JSON.stringify(this.currentSequence));
+        localStorage.setItem('zenMode', 'true');
         
         // Navigate to practice page
         window.location.href = 'practice.html';
