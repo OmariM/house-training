@@ -286,6 +286,16 @@ class DanceMoveGenerator {
             this.generateSequence();
         });
 
+        // Save configuration
+        document.getElementById('saveConfig').addEventListener('click', () => {
+            this.saveConfiguration();
+        });
+
+        // Load configuration
+        document.getElementById('loadConfig').addEventListener('click', () => {
+            this.loadConfiguration();
+        });
+
         // Enter key for move input
         document.getElementById('moveName').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -468,6 +478,123 @@ class DanceMoveGenerator {
             clearInterval(this.sequenceInterval);
             this.sequenceInterval = null;
         }
+    }
+
+    saveConfiguration() {
+        const config = {
+            moves: this.moves,
+            transitions: this.transitions,
+            version: '1.0'
+        };
+        
+        const configString = JSON.stringify(config, null, 2);
+        const textarea = document.getElementById('configString');
+        textarea.value = configString;
+        
+        // Select the text for easy copying
+        textarea.select();
+        textarea.setSelectionRange(0, 99999); // For mobile devices
+        
+        // Copy to clipboard
+        try {
+            navigator.clipboard.writeText(configString).then(() => {
+                this.showNotification('Configuration copied to clipboard!', 'success');
+            }).catch(() => {
+                this.showNotification('Configuration saved to text area. Copy manually.', 'info');
+            });
+        } catch (err) {
+            this.showNotification('Configuration saved to text area. Copy manually.', 'info');
+        }
+    }
+
+    loadConfiguration() {
+        const configString = document.getElementById('configString').value.trim();
+        
+        if (!configString) {
+            this.showNotification('Please paste a configuration string first.', 'error');
+            return;
+        }
+        
+        try {
+            const config = JSON.parse(configString);
+            
+            // Validate the configuration
+            if (!config.moves || !Array.isArray(config.moves)) {
+                throw new Error('Invalid configuration: moves array is missing or invalid');
+            }
+            
+            if (!config.transitions || typeof config.transitions !== 'object') {
+                throw new Error('Invalid configuration: transitions object is missing or invalid');
+            }
+            
+            // Clear current data
+            this.moves = [];
+            this.transitions = {};
+            this.currentSequence = [];
+            this.currentSequenceIndex = 0;
+            this.stopSequenceAnimation();
+            
+            // Load the configuration
+            this.moves = [...config.moves];
+            this.transitions = { ...config.transitions };
+            
+            // Update the UI
+            this.updateMovesList();
+            this.updateSelects();
+            this.updateTransitionsList();
+            this.displaySequence();
+            
+            this.showNotification(`Loaded ${this.moves.length} moves and ${Object.keys(this.transitions).length} transition rules.`, 'success');
+            
+        } catch (error) {
+            this.showNotification(`Error loading configuration: ${error.message}`, 'error');
+        }
+    }
+
+    showNotification(message, type = 'info') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 16px;
+            border-radius: 6px;
+            color: white;
+            font-size: 14px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            max-width: 300px;
+        `;
+        
+        // Set background color based on type
+        switch (type) {
+            case 'success':
+                notification.style.backgroundColor = '#10b981';
+                break;
+            case 'error':
+                notification.style.backgroundColor = '#ef4444';
+                break;
+            case 'info':
+            default:
+                notification.style.backgroundColor = '#667eea';
+                break;
+        }
+        
+        // Add to page
+        document.body.appendChild(notification);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease-in';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
     }
 }
 
