@@ -25,6 +25,15 @@ class PracticeMode {
         const zenMode = localStorage.getItem('zenMode');
         this.isZenMode = zenMode === 'true';
         console.log('Zen mode enabled:', this.isZenMode);
+        
+        // Update title and header for zen mode
+        if (this.isZenMode) {
+            document.title = 'Zen Mode - House Training';
+            const headerTitle = document.querySelector('.practice-header h2');
+            if (headerTitle) {
+                headerTitle.textContent = 'Zen Mode';
+            }
+        }
     }
 
     setupEventListeners() {
