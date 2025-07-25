@@ -284,6 +284,7 @@ class PracticeMode {
         const elementsToFade = [
             '.zen-header',
             '.zen-bpm-display',
+            '.zen-bpm-input-group',
             '.zen-playback-controls .zen-play-btn',
             '.zen-settings',
             '.zen-count-display',
@@ -358,6 +359,7 @@ class PracticeMode {
         const elementsToRestore = [
             '.zen-header',
             '.zen-bpm-display',
+            '.zen-bpm-input-group',
             '.zen-playback-controls .zen-play-btn',
             '.zen-settings',
             '.zen-count-display',

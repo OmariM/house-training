@@ -34,11 +34,18 @@ class Metronome {
         if (savedEmphasis !== null) {
             this.emphasisEnabled = savedEmphasis === 'true';
         }
+        
+        // Load BPM from localStorage
+        const savedBpm = localStorage.getItem('bpm');
+        if (savedBpm !== null) {
+            this.bpm = parseInt(savedBpm) || 120;
+        }
     }
 
     saveToggleStates() {
         localStorage.setItem('subdivisionEnabled', this.subdivisionEnabled.toString());
         localStorage.setItem('emphasisEnabled', this.emphasisEnabled.toString());
+        localStorage.setItem('bpm', this.bpm.toString());
     }
 
     initializeAudio() {
@@ -51,7 +58,7 @@ class Metronome {
     }
 
     setupEventListeners() {
-        // BPM input (only on main page)
+        // BPM input (works on all pages now)
         const bpmInput = document.getElementById('bpmInput');
         if (bpmInput) {
             bpmInput.addEventListener('input', (e) => {
@@ -149,6 +156,7 @@ class Metronome {
 
     setBpm(bpm) {
         this.bpm = Math.max(40, Math.min(200, bpm));
+        this.saveToggleStates(); // Save BPM to localStorage
         this.updateDisplay();
         
         if (this.isPlaying) {
@@ -158,7 +166,17 @@ class Metronome {
     }
 
     updateDisplay() {
-        // BPM display removed for minimal UI
+        // Update BPM display on all pages
+        const bpmDisplay = document.getElementById('bpmDisplay');
+        if (bpmDisplay) {
+            bpmDisplay.textContent = this.bpm;
+        }
+        
+        // Update BPM input field on all pages
+        const bpmInput = document.getElementById('bpmInput');
+        if (bpmInput) {
+            bpmInput.value = this.bpm;
+        }
     }
 
     toggleSubdivision() {

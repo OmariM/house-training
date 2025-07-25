@@ -1142,3 +1142,57 @@ body {
     position: relative;
     z-index: 5;
 } 
+
+/* Practice mode BPM input */
+.practice-container .bpm-input-group {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.practice-container #bpmInput {
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    text-align: center;
+    font-weight: 500;
+    width: 120px;
+    transition: all 0.2s ease;
+}
+
+.practice-container #bpmInput:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Zen mode BPM input */
+.zen-bpm-input-group {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.zen-bpm-input-group #bpmInput {
+    padding: 0.75rem 1rem;
+    border: 2px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    text-align: center;
+    font-weight: 500;
+    width: 120px;
+    background: white;
+    color: #1e293b;
+    transition: all 0.2s ease;
+}
+
+.zen-bpm-input-group #bpmInput:focus {
+    outline: none;
+    border-color: #475569;
+    box-shadow: 0 0 0 3px rgba(71, 85, 105, 0.1);
+}
+
+.zen-bpm-input-group #bpmInput::placeholder {
+    color: #94a3b8;
+} 
