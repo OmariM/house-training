@@ -475,7 +475,28 @@ class DanceMoveGenerator {
         this.currentSequenceIndex = 0;
         this.sequenceInterval = null;
         
+        this.loadConfigFromStorage();
         this.setupEventListeners();
+    }
+
+    loadConfigFromStorage() {
+        const savedConfig = localStorage.getItem('danceConfig');
+        if (savedConfig) {
+            try {
+                const config = JSON.parse(savedConfig);
+                this.moves = config.moves || [];
+                this.transitions = config.transitions || {};
+                
+                // Update the UI to reflect loaded data
+                this.updateMovesList();
+                this.updateSelects();
+                this.updateTransitionsList();
+                
+                console.log('Loaded moves and transitions from storage:', this.moves.length, 'moves,', Object.keys(this.transitions).length, 'transition rules');
+            } catch (error) {
+                console.error('Error loading configuration from storage:', error);
+            }
+        }
     }
 
     setupEventListeners() {
