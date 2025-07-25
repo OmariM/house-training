@@ -7,17 +7,38 @@ class Metronome {
         this.currentEighth = 0;
         this.timeSignature = 4;
         this.soundType = 'click';
-        this.subdivisionEnabled = true;
-        this.emphasisEnabled = true;
+        this.subdivisionEnabled = false;
+        this.emphasisEnabled = false;
         this.audioContext = null;
         this.nextNoteTime = 0.0;
         this.scheduleAheadTime = 0.1;
         this.lookahead = 25.0;
         this.schedulerInterval = null;
         
+        this.loadToggleStates();
         this.initializeAudio();
         this.setupEventListeners();
+        this.syncToggleButtonsToState();
         this.updateDisplay();
+    }
+
+    loadToggleStates() {
+        // Load subdivision state from localStorage
+        const savedSubdivision = localStorage.getItem('subdivisionEnabled');
+        if (savedSubdivision !== null) {
+            this.subdivisionEnabled = savedSubdivision === 'true';
+        }
+        
+        // Load emphasis state from localStorage
+        const savedEmphasis = localStorage.getItem('emphasisEnabled');
+        if (savedEmphasis !== null) {
+            this.emphasisEnabled = savedEmphasis === 'true';
+        }
+    }
+
+    saveToggleStates() {
+        localStorage.setItem('subdivisionEnabled', this.subdivisionEnabled.toString());
+        localStorage.setItem('emphasisEnabled', this.emphasisEnabled.toString());
     }
 
     initializeAudio() {
@@ -105,6 +126,27 @@ class Metronome {
         }
     }
 
+    syncToggleButtonsToState() {
+        // Subdivision button
+        const subdivisionBtn = document.getElementById('toggleSubdivision');
+        if (subdivisionBtn) {
+            if (this.subdivisionEnabled) {
+                subdivisionBtn.classList.remove('quarter-mode');
+            } else {
+                subdivisionBtn.classList.add('quarter-mode');
+            }
+        }
+        // Emphasis button
+        const emphasisBtn = document.getElementById('toggleEmphasis');
+        if (emphasisBtn) {
+            if (this.emphasisEnabled) {
+                emphasisBtn.classList.remove('equal-mode');
+            } else {
+                emphasisBtn.classList.add('equal-mode');
+            }
+        }
+    }
+
     setBpm(bpm) {
         this.bpm = Math.max(40, Math.min(200, bpm));
         this.updateDisplay();
@@ -121,6 +163,7 @@ class Metronome {
 
     toggleSubdivision() {
         this.subdivisionEnabled = !this.subdivisionEnabled;
+        this.saveToggleStates();
         
         // Update button appearance
         const button = document.getElementById('toggleSubdivision');
@@ -140,6 +183,7 @@ class Metronome {
 
     toggleEmphasis() {
         this.emphasisEnabled = !this.emphasisEnabled;
+        this.saveToggleStates();
         
         // Update button appearance
         const button = document.getElementById('toggleEmphasis');
